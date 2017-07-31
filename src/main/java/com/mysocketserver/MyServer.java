@@ -13,13 +13,17 @@ import java.util.concurrent.Executors;
 
 import org.apache.tomcat.jni.Buffer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class MyServer {
 	public static List<SocketClientBean> clientlist = new ArrayList<SocketClientBean>();
 	private static Timer timer = new Timer();
 	private static Executor service = null;
+	private static ObjectMapper objectMapper = null;
 	public static void rerfresh() {
 		timer.schedule(new MyClientRefreshTask(), 1000 * 0, 1000 * 15);
 		service = Executors.newCachedThreadPool();
+		objectMapper = new ObjectMapper();
 	}
 
 	public static void destroyedTimer() {
@@ -33,54 +37,39 @@ public class MyServer {
 
 	public static void invoke(final Socket client) throws IOException {
 
-	
-		 System.out.println("---------------------"); BufferedReader re = new
-		 BufferedReader(new InputStreamReader(client.getInputStream()));
-		 System.out.println("---------------------"); 
-		 String message = re.readLine(); 
-		 System.out.println("--------"+message);
-		 ServerClientThread thread = new ServerClientThread(client);
+		System.out.println("---------------------");
+		BufferedReader re = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		System.out.println("---------------------");
+		String message = re.readLine();
+		System.out.println("--------" + message);
+		//objectMapper.readValue(message,JsonOb)
+		//JSONOb
+		ServerClientThread thread = new ServerClientThread(client);
 		service.execute(thread);
+		
+		
+		
+		
 		// thread.start();
-		 
-		 	/*new Thread(new Runnable() {
-			public void run() {
-				// String errcmd = "{\"cmd\":-1}"; String nocmd = "{\"cmd\":0}";
-				BufferedReader in = null;
-				PrintWriter out = null;
-				try {
-					in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-					out = new PrintWriter(client.getOutputStream());
-					Integer count = 0;
-					while (true) {
-						System.out.println("----------------");
-						String cmdmsg = in.readLine();
-						count++;
-						System.out.println(count);
-						System.out.println("Server received " + cmdmsg);
 
-						// JSONObject jsmsg = JSONObject.fromObject(cmdmsg);
-						// System.out.println("JSONObject success");
-						// String cmd = jsmsg.getString("cmd");
-						out.println("----");
-						out.flush();
-						if (cmdmsg != null && cmdmsg.equals("bye")) {
-							break;
-						}
-					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				} finally {
-					try {
-						in.close();
-						out.close();
-						client.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();*/
+		/*
+		 * new Thread(new Runnable() { public void run() { // String errcmd =
+		 * "{\"cmd\":-1}"; String nocmd = "{\"cmd\":0}"; BufferedReader in =
+		 * null; PrintWriter out = null; try { in = new BufferedReader(new
+		 * InputStreamReader(client.getInputStream())); out = new
+		 * PrintWriter(client.getOutputStream()); Integer count = 0; while
+		 * (true) { System.out.println("----------------"); String cmdmsg =
+		 * in.readLine(); count++; System.out.println(count);
+		 * System.out.println("Server received " + cmdmsg);
+		 * 
+		 * // JSONObject jsmsg = JSONObject.fromObject(cmdmsg); //
+		 * System.out.println("JSONObject success"); // String cmd =
+		 * jsmsg.getString("cmd"); out.println("----"); out.flush(); if (cmdmsg
+		 * != null && cmdmsg.equals("bye")) { break; } } } catch (Exception ex)
+		 * { ex.printStackTrace(); } finally { try { in.close(); out.close();
+		 * client.close(); } catch (Exception e) { e.printStackTrace(); } } }
+		 * }).start();
+		 */
 	}
 
 	static class MyClientRefreshTask extends java.util.TimerTask {
