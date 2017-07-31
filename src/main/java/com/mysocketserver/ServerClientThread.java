@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import net.sf.json.JSONObject;
+
 public class ServerClientThread extends Thread{
 
 	public Socket client;
@@ -19,24 +21,26 @@ public class ServerClientThread extends Thread{
 		BufferedReader in = null;
 		PrintWriter out = null;
 		try {
-			in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			out = new PrintWriter(client.getOutputStream());
+			
 			Integer count = 0;
 			
 			while (true) {
-		
-				String cmdmsg = in.readLine();
-				System.out.println("-----------------");
+				in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+				out = new PrintWriter(client.getOutputStream());
+				String message = in.readLine();
 				count++;
-				System.out.println(count);
-				System.out.println("Server received " + cmdmsg);
-
-				// JSONObject jsmsg = JSONObject.fromObject(cmdmsg);
+				System.out.println(count+"Server received " + message);
+				JSONObject mes = JSONObject.fromObject(message);
+				String uid = mes.optString("id");
+				String content = mes.optString("content");
+				
+				ServerClientThread thread = SocketClientBean.getThread(uid);
+				
 				// System.out.println("JSONObject success");
 				// String cmd = jsmsg.getString("cmd");
 				out.println("----");
 				out.flush();
-				if (cmdmsg.equals("bye")) {
+				if (message.equals("bye")) {
 					break;
 				}
 			}

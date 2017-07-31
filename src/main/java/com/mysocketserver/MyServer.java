@@ -15,6 +15,8 @@ import org.apache.tomcat.jni.Buffer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import net.sf.json.JSONObject;
+
 public class MyServer {
 	public static List<SocketClientBean> clientlist = new ArrayList<SocketClientBean>();
 	private static Timer timer = new Timer();
@@ -37,14 +39,16 @@ public class MyServer {
 
 	public static void invoke(final Socket client) throws IOException {
 
-		System.out.println("---------------------");
 		BufferedReader re = new BufferedReader(new InputStreamReader(client.getInputStream()));
-		System.out.println("---------------------");
 		String message = re.readLine();
 		System.out.println("--------" + message);
 		//objectMapper.readValue(message,JsonOb)
-		//JSONOb
+		JSONObject object = JSONObject.fromObject(message);
+		String uid = object.optString("userid");
+		object.get("username");
+		
 		ServerClientThread thread = new ServerClientThread(client);
+		SocketClientBean.addClientThread(uid, thread);
 		service.execute(thread);
 		
 		
