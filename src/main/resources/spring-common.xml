@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 注意下面配置中的spring-*.xsd的版本号要与使用的jar包匹配 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/jee 
+		http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<description>Spring Configuration</description>
+
+	<!-- 加载配置属性文件 -->
+	<context:property-placeholder
+		ignore-unresolvable="true" location="classpath*:/shi.properties" />
+
+	<!-- 只解析除controller之外的注解(即解析service、dao), 避免重复加载导致事务失效 -->
+	<context:component-scan 
+	base-package="
+	com.lq,com.user,
+	com.index,
+	com.category,
+	com.categorysecond,
+	com.product,
+	com.cart,
+	com.order
+	">  <!-- base-package 如果多个，用“,”分隔 -->
+		<!-- annotation为spting-mvc中解析的内容 -->
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<!-- 配置数据源 -->
+	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property> 
+		换成自己的数据库路径 <property name="url" value="jdbc:mysql://localhost/mvctest"></property> 
+		<property name="username" value="root"></property> <property name="password" 
+		value="shixin"></property> </bean> -->
+	<!-- Production 环境 -->
+
+	<!-- 配置SessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+
+		<!-- packagesToScan 扫描包所在路径（name中的内容其实是个关键字，可以扫描一整个包） -->
+		<property name="packagesToScan">
+			<list>
+				<!-- 此处可添加多个entity -->
+				<value>com.lq.entity</value>
+				<value>com.user.entity</value>
+				<value>com.category</value>
+				<value>com.categorysecond</value>
+				<value>com.product</value>
+				<value>com.order</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<!-- 第一次生成数据库的时候用create，之后换成update，否则内容会清空 -->
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext
+				</prop>
+			     <!-- 开启二级缓存 -->  
+                <prop key=" hibernate.cache.use_second_level_cache">true</prop>  	
+			      <!-- 启用查询缓存 -->  
+                <prop key=" hibernate.cache.use_query_cache">true</prop>  
+                <!-- 配置二级缓存提供商 -->  
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+                
+                <!-- 加载缓存所需配置文件 -->  
+                <prop key="hibernate.net.sf.ehcache.configurationResourceName">${ehcache.configFile}</prop>  
+				<!-- <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory
+				</prop>
+				<prop key="net.sf.ehcache.configurationResourceName">${hibernate.ehcache.configFile}</prop> -->
+				<!-- <prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.search.default.directory_provider">filesystem</prop> -->
+				<!-- <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop> -->
+
+			</props>
+		</property>
+		
+		<!-- <property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property> -->
+	</bean>
+
+
+	<!-- 配置一个事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 配置 Annotation 驱动，扫描@Transactional注解的类定义事务  -->
+<!-- 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/> -->
+	
+	<!-- 缓存配置 -->
+	<!-- <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:${ehcache.configFile}" />
+	</bean> -->
+	
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- 拦截的是下段配置aop里设置的路径，即txPointcut中配置的路径 -->
+			<!-- 具体的propagation含义请自查 -->
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="create*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="merge*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="put*" propagation="REQUIRED" />
+			<tx:method name="use*" propagation="REQUIRED" />
+			<!--hibernate4必须配置为开启事务 否则 getCurrentSession()获取不到 -->
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="count*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="list*" propagation="REQUIRED" read-only="true" />
+	<!-- 		<tx:method name="*" read-only="true" /> -->
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config expose-proxy="true">
+		<!-- 只对业务逻辑层（service层）实施事务  -->
+	<!-- 	<aop:pointcut id="txPointcut" expression="execution(* com.user.service.*.*(..)) || execution(* com.order.service.*.*(..)) " />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" /> -->
+	<!-- 	com.order.service.OrderService -->
+			<aop:advisor advice-ref="txAdvice" pointcut="execution(* com.order.service.*.*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* com.user.service.*.*(..))"/>
+
+	</aop:config>
+	<beans profile="production">
+
+		<!-- 数据源配置, 使用 BoneCP 数据库连接池 -->
+		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+			init-method="init" destroy-method="close">
+			<!-- 数据源驱动类可不写，Druid默认会自动根据URL识别DriverClass -->
+			<property name="driverClassName" value="${jdbc.driver}" />
+
+			<!-- 基本属性 url、user、password -->
+			<property name="url" value="${jdbc.url}" />
+			<property name="username" value="${jdbc.username}" />
+			<property name="password" value="${jdbc.password}" />
+
+			<!-- 配置初始化大小、最小、最大 -->
+			<property name="initialSize" value="${jdbc.pool.minIdle}" />
+			<property name="minIdle" value="${jdbc.pool.minIdle}" />
+			<property name="maxActive" value="${jdbc.pool.maxActive}" />
+
+			<!-- 配置获取连接等待超时的时间 -->
+			<property name="maxWait" value="60000" />
+
+			<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+			<property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+			<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+			<property name="minEvictableIdleTimeMillis" value="300000" />
+
+			<property name="validationQuery" value="SELECT 'x'" />
+			<property name="testWhileIdle" value="true" />
+			<property name="testOnBorrow" value="false" />
+			<property name="testOnReturn" value="false" />
+
+			<!-- 打开PSCache，并且指定每个连接上PSCache的大小（Oracle使用） <property name="poolPreparedStatements" 
+				value="true" /> <property name="maxPoolPreparedStatementPerConnectionSize" 
+				value="20" /> -->
+
+			<!-- 配置监控统计拦截的filters -->
+			<property name="filters" value="stat" />
+		</bean>
+
+		<!-- 数据源配置, 使用应用服务器的数据库连接池 <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/jeesite" 
+			/> -->
+
+		<!-- 数据源配置, 不使用连接池 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+			<property name="driverClassName" value="${jdbc.driver}" /> <property name="url" 
+			value="${jdbc.url}" /> <property name="username" value="${jdbc.username}"/> 
+			<property name="password" value="${jdbc.password}"/> </bean> -->
+
+	</beans>
+
+
+</beans>  

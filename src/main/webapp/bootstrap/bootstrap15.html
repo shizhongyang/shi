@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!--  initial-scale=1  不缩放   width=device-width 物理设备的宽度   加上这句可以适配手机-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<title>Bootstrap 101 Template</title>
+<link rel="stylesheet"
+	href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+<!--  [if lt IE 9]> -->
+<script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+<script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+
+
+<script
+	src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script
+	src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style type="text/css">
+</style>
+<script type="text/javascript">
+	$(function() {
+		$("button").click(function() {
+			$("li").addClass("active");
+			$("div").addClass("important");
+		});
+
+	})
+
+	function choice() {
+		alert($(this).val());
+	}
+</script>
+
+</head>
+<body>
+	<!-- “..” 在路径中代表当前网页所在目录的上一级目录 
+“.” 在路径中代表当前网页所在目录   -->
+	<div class="container center-block">
+		sadgasgasdg
+		<p>hello world</p>
+
+		<a class="sr-only sr-only-focusable focus" href="#content">Skip to
+			main content</a> <span class="glyphicon glyphicon-search"></span>
+
+		<p>带有下拉菜单的标签</p>
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#">Home</a></li>
+			<li ><a href="#">SVN</a></li>
+			<li><a href="#">iOS</a></li>
+			<li><a href="#">VB.Net</a></li>
+			<li class="dropdown"><a class="dropdown-toggle"
+				data-toggle="dropdown" href="#"> Java <span class="caret"></span>
+			</a>
+				<ul class="dropdown-menu">
+					<li><a href="#">Swing</a></li>
+					<li><a href="#">jMeter</a></li>
+					<li><a href="#">EJB</a></li>
+					<li class="divider"></li>
+					<li><a href="#">分离的链接</a></li>
+				</ul></li>
+			<li><a href="#">PHP</a></li>
+		</ul>
+		<button name="button">点击事件</button>
+	</div>
+
+</body>
+</html>
