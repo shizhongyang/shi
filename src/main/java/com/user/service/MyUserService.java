@@ -44,5 +44,11 @@ public class MyUserService {
 	}
 	
 	
+	public MyUser findUserById(String uid) {
+		// TODO Auto-generated method stub
+		return userDao.findUserById(uid);
+	}
+	
+	
 	
 }

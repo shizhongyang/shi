@@ -63,4 +63,14 @@ public class MyUserDao extends HibernateDaoSupport {
 		return null;
 	}
 
+	public MyUser findUserById(String uid) {
+		
+		String hql = "from MyUser where id = ?";
+		List<MyUser> list = (List<MyUser>) this.getHibernateTemplate().find(hql, uid);
+		if (list.size()!=0) {
+			return list.get(0);			
+		}
+		return null;
+	}
+
 }

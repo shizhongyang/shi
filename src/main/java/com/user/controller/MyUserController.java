@@ -29,7 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mapper.JsonMapper;
+import com.message.UserMessage;
 import com.user.entity.MyUser;
+import com.user.service.MessageService;
 import com.user.service.MyUserService;
 import com.utils.CreateFileUtil;
 import com.utils.UUIDTool;
@@ -40,9 +42,14 @@ public class MyUserController {
 
 	@Autowired
 	private MyUserService userService;
-
+	
+	@Autowired
+	private MessageService messageService;
+	
+	
 	@ModelAttribute
-	public void getMyUser(@RequestParam(value = "id", required = false) String id, Map<String, Object> map) {
+	public void getMyUser(@RequestParam(value = "id", required = false) 
+	String id, Map<String, Object> map) {
 		if (id != null) {
 			map.put("myUser", userService.get(id));
 		}
@@ -198,6 +205,13 @@ public class MyUserController {
 				session.setAttribute("token", token);
 				session.setAttribute("myUser", user);
 				
+				UserMessage message = new UserMessage();
+				message.setRead(false);
+				message.setUser(user);
+				message.setContent("----");
+				
+				messageService.save(message);
+				
 				map.put("code", 1);
 				map.put("msg", "登录成功");
 				map.put("data", user);
@@ -207,12 +221,57 @@ public class MyUserController {
 				return "user/index";
 			}else {
 				return "user/login";
-			}
-			
+			}			
 		}
 
 	}
 
+	
+	@ResponseBody
+	@RequestMapping(value = "/loginPhone", method = RequestMethod.POST)
+	public String loginPhone(HttpServletRequest request){
+		String telephone = request.getParameter("telephone");
+		String password = request.getParameter("password");
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		if (telephone.equals("") || password.equals("")) {
+			map.put("code", -1);
+			map.put("msg", "用户名密码错误");
+			map.put("data", null);
+			String string = JsonMapper.getInstance().toJson(map);
+			return string;
+		}else {
+			MyUser user = userService.login(telephone, password);
+			if (user!=null) {
+				System.out.println("-------------" + user);
+				
+				//生成token值
+				String token = UUIDTool.getUUID();
+				//设置到user当中
+				user.setToken(token);
+				HttpSession session = request.getSession();
+				
+				session.setAttribute("token", token);
+				session.setAttribute("myUser", user);
+				
+				map.put("code", 1);
+				map.put("msg", "登录成功");
+				map.put("data", user);		
+				String string = JsonMapper.getInstance().toJson(map);
+				return string;
+			}else {
+				map.put("code", -1);
+				map.put("msg", "用户名密码错误");
+				map.put("data", null);
+				String string = JsonMapper.getInstance().toJson(map);
+				
+				return string;
+			}
+		}
+
+	}
+	
+	
+	
 	
 	/**
 	 * 更新页面

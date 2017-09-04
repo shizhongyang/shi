@@ -86,7 +86,9 @@
 	com.index,
 	com.product,
 	com.cart,
-	com.order
+	com.order,
+	com.message,
+	com.mysocketserver
 	">
 		<!-- <context:include-filter type="annotation" expression="org.springframework.stereotype.Service" 
 			/> <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" 

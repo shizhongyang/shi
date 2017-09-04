@@ -11,17 +11,47 @@ import java.util.Timer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import org.apache.tomcat.jni.Buffer;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.message.UserMessage;
+import com.user.entity.MyUser;
+import com.user.service.MessageService;
+import com.user.service.MyUserService;
 
 import net.sf.json.JSONObject;
 
+@Component
 public class MyServer {
 	public static List<SocketClientBean> clientlist = new ArrayList<SocketClientBean>();
+
+	/*	private static MessageService messageService;
+	@Autowired
+	private MyUserService myUserService;
+	private static MyUserService userService;
+
+	@Autowired
+	private MyUserService userService2;
+
+	@PostConstruct
+	public void beforeInit() {
+		userService = userService2;
+	}
+
+	@Autowired
+	public MyServer(MessageService messageService, MyUserService myUserService) {
+		MyServer.messageService = messageService;
+		System.out.println("------MyServer"+myUserService);
+		//MyServer.myUserService = myUserService;
+	}
+*/
 	private static Timer timer = new Timer();
 	private static Executor service = null;
 	private static ObjectMapper objectMapper = null;
+
 	public static void rerfresh() {
 		timer.schedule(new MyClientRefreshTask(), 1000 * 0, 1000 * 15);
 		service = Executors.newCachedThreadPool();
@@ -41,19 +71,24 @@ public class MyServer {
 
 		BufferedReader re = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		String message = re.readLine();
-		System.out.println("--------" + message);
-		//objectMapper.readValue(message,JsonOb)
+		System.out.println("invoke--------" + message);
+		// objectMapper.readValue(message,JsonOb)
 		JSONObject object = JSONObject.fromObject(message);
-		String uid = object.optString("userid");
-		object.get("username");
-		
+		String uid = object.optString("userId");
+		object.get("userNm");
+
+		/*//System.out.println("invoke--------" + myUserService + userService);
+	//	MyUser myUser = myUserService.findUserById(uid);
+		UserMessage mUserMessage = new UserMessage();
+		mUserMessage.setContent(message);
+	//	mUserMessage.setUser(myUser);
+		mUserMessage.setRead(false);
+		messageService.save(mUserMessage);*/
+
 		ServerClientThread thread = new ServerClientThread(client);
 		SocketClientBean.addClientThread(uid, thread);
 		service.execute(thread);
-		
-		
-		
-		
+
 		// thread.start();
 
 		/*

@@ -47,8 +47,8 @@ public class CategorySecond {
 	@ManyToOne(cascade = CascadeType.ALL, optional = false)
 	@JoinColumn(name = "cid", referencedColumnName = "cid") 
 	private Category category;
-	// 关联的商品的集合
 	
+	// 关联的商品的集合
 	@OneToMany(mappedBy = "categorySecond", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private Set<Product> products = new HashSet<Product>();
 	

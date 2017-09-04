@@ -31,6 +31,7 @@ public class Category {
 	private Integer cid;
 	@Column(name="cname")
 	private String cname;
+	
 	// 有二级分类的集合
 	@OneToMany(mappedBy = "category",  fetch = FetchType.LAZY)
 	private Set<CategorySecond> categorySeconds = new HashSet<CategorySecond>();

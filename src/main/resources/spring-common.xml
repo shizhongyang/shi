@@ -20,17 +20,33 @@
 	<!-- 加载配置属性文件 -->
 	<context:property-placeholder
 		ignore-unresolvable="true" location="classpath*:/shi.properties" />
+		
+	<!-- 
+	
+	在xml配置了这个标签后，spring可以自动去扫描base-pack下面或者子包下面的Java文件，如果扫描到有@Component
+	@Controller@Service等这些注解的类，则把这些类注册为bean
+	
+	注意：如果配置了<context:component-scan>那么<context:annotation-config/>
+	标签就可以不用再xml中配置了，因为前者包含了后者。
+
+	另外<context:component-scan>还提供了两个子标签 
+	1.        <context:include-filter>
+	2.        <context:exclude-filter>
+	 -->
 
 	<!-- 只解析除controller之外的注解(即解析service、dao), 避免重复加载导致事务失效 -->
 	<context:component-scan 
 	base-package="
-	com.lq,com.user,
+	com.lq,
+	com.user,
 	com.index,
 	com.category,
 	com.categorysecond,
 	com.product,
 	com.cart,
-	com.order
+	com.order,
+	com.message,
+	com.mysocketserver
 	">  <!-- base-package 如果多个，用“,”分隔 -->
 		<!-- annotation为spting-mvc中解析的内容 -->
 		<context:exclude-filter type="annotation"
@@ -60,6 +76,8 @@
 				<value>com.categorysecond</value>
 				<value>com.product</value>
 				<value>com.order</value>
+				<value>com.message</value>
+				<value>com.mysocketserver</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -138,9 +156,10 @@
 		<!-- 只对业务逻辑层（service层）实施事务  -->
 	<!-- 	<aop:pointcut id="txPointcut" expression="execution(* com.user.service.*.*(..)) || execution(* com.order.service.*.*(..)) " />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" /> -->
-	<!-- 	com.order.service.OrderService -->
-			<aop:advisor advice-ref="txAdvice" pointcut="execution(* com.order.service.*.*(..))"/>
+	<!-- com.order.service.OrderService -->
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* com.order.service.*.*(..))"/>
 		<aop:advisor advice-ref="txAdvice" pointcut="execution(* com.user.service.*.*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* com.message.*.*(..))"/>
 
 	</aop:config>
 	<beans profile="production">
