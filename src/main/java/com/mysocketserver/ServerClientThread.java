@@ -16,7 +16,7 @@ import com.user.service.MyUserService;
 import net.sf.json.JSONObject;
 
 
-@Controller
+@Component
 public class ServerClientThread extends Thread{
 
 	@Autowired
@@ -58,8 +58,7 @@ public class ServerClientThread extends Thread{
 				String uid = mes.optString("userId");
 				String content = mes.optString("appMark");
 				
-				
-				
+
 				ServerClientThread thread = SocketClientBean.getThread(uid);
 				
 				// System.out.println("JSONObject success");

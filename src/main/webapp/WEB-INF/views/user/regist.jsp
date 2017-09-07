@@ -165,7 +165,7 @@
 					<div class="title">
 						<strong>用户注册</strong>USER REGISTER
 					</div>
-					<form id="registerForm" action="${basePath }myuser/regist"
+					<form id="registerForm" action="${basePath }myuser/registInPhone"
 						method="post" novalidate="novalidate"
 						enctype="multipart/form-data"
 						onsubmit="return checkForm();">
