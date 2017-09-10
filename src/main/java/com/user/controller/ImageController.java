@@ -20,8 +20,8 @@ public class ImageController {
 	
 	@RequestMapping("/img")
 	public void  verificationCode(HttpServletRequest request ,HttpServletResponse response) throws IOException{
-		int width = 120;
-		int height = 30;
+		int width = 160;
+		int height = 50;
 
 		// 步骤一 绘制一张内存中图片
 		BufferedImage bufferedImage = new BufferedImage(width, height,
@@ -40,7 +40,7 @@ public class ImageController {
 		// 步骤四 四个随机数字
 		Graphics2D graphics2d = (Graphics2D) graphics;
 		// 设置输出字体
-		graphics2d.setFont(new Font("Consolas", Font.BOLD, 20));
+		graphics2d.setFont(new Font("Consolas", Font.BOLD, 35));
 
 		String words = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 		// String words =
@@ -65,10 +65,10 @@ public class ImageController {
 			char c = words.charAt(index);
 			sb.append(c);
 			// 将c 输出到图片
-			graphics2d.rotate(theta, x, 20);
-			graphics2d.drawString(String.valueOf(c), x, 20);
-			graphics2d.rotate(-theta, x, 20);
-			x += 30;
+			graphics2d.rotate(theta, x, 30);
+			graphics2d.drawString(String.valueOf(c), x, 30);
+			graphics2d.rotate(-theta, x, 30);
+			x += 40;
 		}
 
 		// 将生成的字母存入到session中
