@@ -47,7 +47,9 @@ public class MyUserController {
 	private MessageService messageService;
 
 	@ModelAttribute
-	public void getMyUser(@RequestParam(value = "id", required = false) String id, Map<String, Object> map) {
+	public void getMyUser(
+			@RequestParam(value = "id", required = false) String id,
+			Map<String, Object> map) {
 		if (id != null) {
 			map.put("myUser", userService.get(id));
 		}
@@ -90,20 +92,22 @@ public class MyUserController {
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-
 	@RequestMapping(value = "/regist", method = RequestMethod.POST)
 	public String regist(MyUser myUser, // 接收的bean
 			@RequestParam(value = "file", required = false) MultipartFile file, // 接收的图片
-			HttpServletRequest request) throws IllegalStateException, IOException {
+			HttpServletRequest request)
+			throws IllegalStateException, IOException {
 		String checkcode = request.getParameter("checkcode");
 		String code = (String) request.getSession().getAttribute("checkcode");
 		if (code.equals(checkcode)) {
-			String pathRoot = request.getSession().getServletContext().getRealPath("");
+			String pathRoot = request.getSession().getServletContext()
+					.getRealPath("");
 			String path = "";
 			if (!file.isEmpty()) {
 				String uuid = UUID.randomUUID().toString().replaceAll("-", "");
 				String contentType = file.getContentType();
-				String imageName = contentType.substring(contentType.indexOf("/") + 1);
+				String imageName = contentType
+						.substring(contentType.indexOf("/") + 1);
 				path = "/static/images/" + uuid + "." + imageName;
 
 				CreateFileUtil.createDir(pathRoot + path);
@@ -151,12 +155,70 @@ public class MyUserController {
 	}
 
 	/**
+	 * 注册的接口
+	 * 
+	 * @param myUser
+	 *            用户信息
+	 * @param file
+	 *            文件
+	 * @param request
+	 * @return
+	 * @throws IllegalStateException
+	 * @throws IOException
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/registPhone", method = RequestMethod.POST)
+	public String registPhone(MyUser myUser, // 接收的bean
+			@RequestParam(value = "file", required = false) MultipartFile file, // 接收的图片
+			HttpServletRequest request)
+			throws IllegalStateException, IOException {
+
+		/*
+		 * String checkcode = request.getParameter("checkcode"); String code =
+		 * (String) request.getSession().getAttribute("checkcode"); if
+		 * (checkcode==null || code == null) {
+		 * 
+		 * return "failure"; }
+		 * 
+		 * if (code.equals(checkcode)) {
+		 */
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		String pathRoot = request.getSession().getServletContext()
+				.getRealPath("");
+		String path = "";
+		if (!file.isEmpty()) {
+			String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+			String contentType = file.getContentType();
+			String imageName = contentType
+					.substring(contentType.indexOf("/") + 1);
+			path = "/static/images/" + uuid + "." + imageName;
+
+			CreateFileUtil.createDir(pathRoot + path);
+			file.transferTo(new File(pathRoot + path));
+			System.out.println("------------success");
+			myUser.setImgAvatar(path);
+		}
+		userService.save(myUser);
+		myUser = userService.findUserByPhone(myUser.getTelephone());
+		request.getSession().setAttribute("myUser", myUser);
+		// }
+		System.out.println("-----------" + myUser);
+		//http://localhost:8080/shi/static/images/aed803b7c15a4e8a9b2e4904db2754da.jpg
+		map.put("code", 1);
+		map.put("msg", "注册成功");
+		map.put("data", null);
+		String string = JsonMapper.getInstance().toJson(map);
+		return string;
+	}
+
+	/**
 	 * 前台:注册AJAX验证码.
 	 * 
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/checkCode", method = RequestMethod.POST)
-	public void checkUserName(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void checkUserName(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
 		String checkCode = request.getParameter("checkcode");
 		String code = (String) request.getSession().getAttribute("checkcode");
 
@@ -177,7 +239,8 @@ public class MyUserController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/checkPhone", method = RequestMethod.POST)
-	public void checkPhone(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void checkPhone(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
 		String phone = request.getParameter("phone");
 		MyUser myUser = userService.findUserByPhone(phone);
 
@@ -205,7 +268,12 @@ public class MyUserController {
 	 */
 	// @ResponseBody
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
+<<<<<<< HEAD
 	public String login(HttpServletRequest request, HttpServletResponse response, Map<String, Object> maps)
+=======
+	public String login(HttpServletRequest request,
+			HttpServletResponse response, Map<String, Object> maps)
+>>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 			throws IOException {
 		// System.out.println("测试进入-----");
 		String checkCode = request.getParameter("checkcode");
@@ -215,7 +283,10 @@ public class MyUserController {
 			request.getSession().setAttribute("message", "验证码错误");
 			return "user/login";
 		}
+<<<<<<< HEAD
 
+=======
+>>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 		String telephone = request.getParameter("telephone");
 		String password = request.getParameter("password");
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
@@ -240,6 +311,7 @@ public class MyUserController {
 				session.setAttribute("token", token);
 				session.setAttribute("myUser", user);
 
+<<<<<<< HEAD
 				UserMessage message = new UserMessage();
 				message.setRead(false);
 				message.setUser(user);
@@ -247,6 +319,8 @@ public class MyUserController {
 
 				messageService.save(message);
 
+=======
+>>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 				map.put("code", 1);
 				map.put("msg", "登录成功");
 				map.put("data", user);
@@ -258,15 +332,52 @@ public class MyUserController {
 				return "user/login";
 			}
 		}
-
 	}
 
+<<<<<<< HEAD
 	@ResponseBody
 	@RequestMapping(value = "/loginPhone", method = RequestMethod.POST)
 	public String loginPhone(HttpServletRequest request) {
 		String telephone = request.getParameter("telephone");
 		String password = request.getParameter("password");
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
+=======
+	/**
+	 * 登录的接口
+	 * 
+	 * @param request
+	 *            请求信息
+	 * @param response
+	 *            返回信息
+	 * @param maps
+	 * @return
+	 * @throws IOException
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/loginPhone", method = RequestMethod.POST)
+	public String loginInPhone(HttpServletRequest request,
+			HttpServletResponse response, Map<String, Object> maps)
+			throws IOException {
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		String checkCode = request.getParameter("checkcode");
+		String code = (String) request.getSession().getAttribute("checkcode");
+
+		System.out.println("checkcode:" + checkCode + "code:" + code);
+		if (checkCode != null && code != null) {
+			if (!code.equals(checkCode)) {
+				map.put("code", -1);
+				map.put("msg", "验证码错误");
+				map.put("data", null);
+				String string = JsonMapper.getInstance().toJson(map);
+				return string;
+			}
+		}
+
+		String telephone = request.getParameter("telephone");
+		String password = request.getParameter("password");
+
+		System.out.println("测试进入-----" + telephone);
+>>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 		if (telephone.equals("") || password.equals("")) {
 			map.put("code", -1);
 			map.put("msg", "用户名密码错误");
@@ -290,6 +401,11 @@ public class MyUserController {
 				map.put("code", 1);
 				map.put("msg", "登录成功");
 				map.put("data", user);
+<<<<<<< HEAD
+=======
+				maps.put("myUser", user);
+				request.getSession().setAttribute("myUser", user);
+>>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 				String string = JsonMapper.getInstance().toJson(map);
 				return string;
 			} else {
@@ -297,6 +413,7 @@ public class MyUserController {
 				map.put("msg", "用户名密码错误");
 				map.put("data", null);
 				String string = JsonMapper.getInstance().toJson(map);
+<<<<<<< HEAD
 
 				return string;
 			}
@@ -304,6 +421,12 @@ public class MyUserController {
 
 	}
 
+=======
+				return string;
+			}
+		}
+	}
+>>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 	/**
 	 * 更新页面
 	 * 
@@ -316,7 +439,10 @@ public class MyUserController {
 		System.out.println("----------hello" + myUser);
 		HttpSession session = request.getSession();
 		session.setAttribute("myUser", myUser);
+<<<<<<< HEAD
 
+=======
+>>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 		return "user/perfectinformation";
 	}
 
@@ -346,7 +472,12 @@ public class MyUserController {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		sdf.setLenient(true);
+<<<<<<< HEAD
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
+=======
+		binder.registerCustomEditor(Date.class,
+				new CustomDateEditor(sdf, true));
+>>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 
 		// 处理日期类型
 		/*

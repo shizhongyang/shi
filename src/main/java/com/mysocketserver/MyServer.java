@@ -67,6 +67,10 @@ public class MyServer {
 		}
 	}
 
+	/**
+	 * @param client
+	 * @throws IOException
+	 */
 	public static void invoke(final Socket client) throws IOException {
 
 		BufferedReader re = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -88,9 +92,12 @@ public class MyServer {
 		ServerClientThread thread = new ServerClientThread(client);
 		SocketClientBean.addClientThread(uid, thread);
 		service.execute(thread);
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 		// thread.start();
-
 		/*
 		 * new Thread(new Runnable() { public void run() { // String errcmd =
 		 * "{\"cmd\":-1}"; String nocmd = "{\"cmd\":0}"; BufferedReader in =
