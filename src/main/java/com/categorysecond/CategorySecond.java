@@ -39,6 +39,8 @@ public class CategorySecond {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="csid")
 	private Integer csid;
+	
+	
 	@Column(name="csname")
 	private String csname;
 	
