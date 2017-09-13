@@ -7,8 +7,9 @@ import java.util.Iterator;
 
 
 public class SocketClientBean {
-	public static HashMap<String, ServerClientThread> hashMap  = new  HashMap<String, ServerClientThread>();
 	
+	
+	public static HashMap<String, ServerClientThread> hashMap  = new  HashMap<String, ServerClientThread>();
 	
 	private Socket socket;
 	public Socket getSocket() {

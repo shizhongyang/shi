@@ -38,7 +38,7 @@ public class JsonMapper extends ObjectMapper {
 	private static JsonMapper mapper;
 
 	public JsonMapper() {
-		this(Include.NON_EMPTY);
+		this(Include.NON_NULL);
 	}
 
 	public JsonMapper(Include include) {

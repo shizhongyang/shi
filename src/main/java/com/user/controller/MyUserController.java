@@ -268,12 +268,9 @@ public class MyUserController {
 	 */
 	// @ResponseBody
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-<<<<<<< HEAD
-	public String login(HttpServletRequest request, HttpServletResponse response, Map<String, Object> maps)
-=======
 	public String login(HttpServletRequest request,
 			HttpServletResponse response, Map<String, Object> maps)
->>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
+
 			throws IOException {
 		// System.out.println("测试进入-----");
 		String checkCode = request.getParameter("checkcode");
@@ -283,10 +280,7 @@ public class MyUserController {
 			request.getSession().setAttribute("message", "验证码错误");
 			return "user/login";
 		}
-<<<<<<< HEAD
 
-=======
->>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 		String telephone = request.getParameter("telephone");
 		String password = request.getParameter("password");
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
@@ -311,7 +305,7 @@ public class MyUserController {
 				session.setAttribute("token", token);
 				session.setAttribute("myUser", user);
 
-<<<<<<< HEAD
+
 				UserMessage message = new UserMessage();
 				message.setRead(false);
 				message.setUser(user);
@@ -319,8 +313,7 @@ public class MyUserController {
 
 				messageService.save(message);
 
-=======
->>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
+
 				map.put("code", 1);
 				map.put("msg", "登录成功");
 				map.put("data", user);
@@ -334,14 +327,6 @@ public class MyUserController {
 		}
 	}
 
-<<<<<<< HEAD
-	@ResponseBody
-	@RequestMapping(value = "/loginPhone", method = RequestMethod.POST)
-	public String loginPhone(HttpServletRequest request) {
-		String telephone = request.getParameter("telephone");
-		String password = request.getParameter("password");
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
-=======
 	/**
 	 * 登录的接口
 	 * 
@@ -367,7 +352,7 @@ public class MyUserController {
 			if (!code.equals(checkCode)) {
 				map.put("code", -1);
 				map.put("msg", "验证码错误");
-				map.put("data", null);
+				//map.put("data", null);
 				String string = JsonMapper.getInstance().toJson(map);
 				return string;
 			}
@@ -377,11 +362,11 @@ public class MyUserController {
 		String password = request.getParameter("password");
 
 		System.out.println("测试进入-----" + telephone);
->>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
+
 		if (telephone.equals("") || password.equals("")) {
 			map.put("code", -1);
 			map.put("msg", "用户名密码错误");
-			map.put("data", null);
+			//map.put("data", null);
 			String string = JsonMapper.getInstance().toJson(map);
 			return string;
 		} else {
@@ -401,19 +386,18 @@ public class MyUserController {
 				map.put("code", 1);
 				map.put("msg", "登录成功");
 				map.put("data", user);
-<<<<<<< HEAD
-=======
+
 				maps.put("myUser", user);
 				request.getSession().setAttribute("myUser", user);
->>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
+
 				String string = JsonMapper.getInstance().toJson(map);
 				return string;
 			} else {
 				map.put("code", -1);
 				map.put("msg", "用户名密码错误");
-				map.put("data", null);
+				//map.put("data", null);
 				String string = JsonMapper.getInstance().toJson(map);
-<<<<<<< HEAD
+
 
 				return string;
 			}
@@ -421,12 +405,9 @@ public class MyUserController {
 
 	}
 
-=======
-				return string;
-			}
-		}
-	}
->>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
+
+
+
 	/**
 	 * 更新页面
 	 * 
@@ -439,10 +420,6 @@ public class MyUserController {
 		System.out.println("----------hello" + myUser);
 		HttpSession session = request.getSession();
 		session.setAttribute("myUser", myUser);
-<<<<<<< HEAD
-
-=======
->>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
 		return "user/perfectinformation";
 	}
 
@@ -472,12 +449,12 @@ public class MyUserController {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		sdf.setLenient(true);
-<<<<<<< HEAD
+
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
-=======
+
 		binder.registerCustomEditor(Date.class,
 				new CustomDateEditor(sdf, true));
->>>>>>> dd26b8ca52b0c41b714edbc94894896e9f225bc7
+
 
 		// 处理日期类型
 		/*

@@ -43,7 +43,10 @@
 	<!-- ==================配置监听========================================= -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
 	</listener>
+	
+
 	<!-- ==================配置字符集========================================= -->
 	<filter>
 		<filter-name>encodingFilter</filter-name>
@@ -173,7 +176,6 @@
 		<error-code>404</error-code>
 		<location>/WEB-INF/views/error/404.jsp</location>
 	</error-page>
-
 
 	<context-param>
 		<param-name>socketPort</param-name>
