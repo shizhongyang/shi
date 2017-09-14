@@ -16,7 +16,6 @@
 <body>
 
 	<div class="container header">
-		
 		<%@ include file="header.jsp"%>
 		<%@ include file="menu.jsp"%>
 	</div>

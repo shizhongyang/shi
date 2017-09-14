@@ -30,6 +30,9 @@
 				</li>
 				
 				<li id="headerLogin" class="headerLogin" style="display: list-item;">
+					<a href="${ pageContext.request.contextPath }/myuser/findMessage">陌生人列表</a>|
+				</li>
+				<li id="headerLogin" class="headerLogin" style="display: list-item;">
 					<a href="${ pageContext.request.contextPath }/">我的订单</a>|
 				</li>
 				<li id="headerRegister" class="headerRegister"

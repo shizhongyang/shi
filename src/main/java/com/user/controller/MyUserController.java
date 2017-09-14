@@ -55,18 +55,19 @@ public class MyUserController {
 		}
 	}
 
-	@ResponseBody
+	//@ResponseBody
 	@RequestMapping("/findMessage")
-	public String findMessage() {
+	public String findMessage(HttpServletRequest request) {
 		System.out.println("测试进入");
 		ArrayList<MyUser> list = (ArrayList<MyUser>) userService.findmessage();
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		map.put("code", 200);
 		map.put("msg", "请求成功");
 		map.put("list", list);
+		request.getSession().setAttribute("list", list);
 		String string = JsonMapper.getInstance().toJson(map);
 		System.out.println("--------" + string);
-		return string;
+		return "user/MyFriend";
 	}
 
 	/**
@@ -304,7 +305,6 @@ public class MyUserController {
 
 				session.setAttribute("token", token);
 				session.setAttribute("myUser", user);
-
 
 				UserMessage message = new UserMessage();
 				message.setRead(false);
